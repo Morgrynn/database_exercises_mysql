@@ -170,27 +170,32 @@ FROM person
 WHERE city
 );
 
--- 2:  THIS NEEDS TO BE FIXED
-SELECT id_project AS proj, pname
-FROM project 
+-- 2:  THIS NEEDS TO BE FIXED -- FIXED IT--
+SELECT project.id_project AS proj, project.pname, SUM(hour.workhour) AS 'sum of hour'
+FROM project
+RIGHT JOIN hour
+ON project.id_project = hour.id_project
+GROUP BY project.id_project
 UNION
-SELECT SUM(workhour) AS "sum of hour", id_project
+SELECT 'Proj' AS id_project, 'Total' AS pname, SUM(workhour) as 'sum of hour'
 FROM hour;
 
-SELECT 
-	id_project AS proj, 
-    pname
-FROM project p
-JOIN hour h
-		ON p.id_project = h.id_project
-GROUP BY h.id_project;
-
 -- 3.
-SELECT pname, place
+SELECT pname, IFNULL(place, "NO PLACE") AS place
+FROM project;
+
+-- 4
+SELECT place, GROUP_CONCAT(pname) AS 'project'
 FROM project
-UNION
-SELECT city AS place 
-FROM person;
+GROUP BY place;
+
+-- 5 -- NEED TO FIX THIS ONE ALMOST THERE
+SELECT IFNULL(place, "No place") AS place, GROUP_CONCAT(pname) AS 'project'
+FROM project
+GROUP BY place ASC;
+
+
+
 
 
 
